@@ -20,6 +20,7 @@ mongoose.connect('mongodb+srv://bradford:bradford@cluster0.cpmkg9v.mongodb.net/?
 // Default route - Serve login/register form
 app.get('/', async (req, res) => {
     const userID = req.cookies.userID;
+
     if (userID) {
         res.redirect('/user-info');
 
@@ -88,6 +89,7 @@ app.post('/', async (req, res) => {
             // Set cookie with userID
             res.cookie('userID', userID, { maxAge: 60000 });            
             res.redirect('/user-info');
+
         } else if (action === 'register') {
             // Check if the user already exists
             const existingUser = await User.findOne({ userID });
@@ -120,13 +122,16 @@ app.post('/', async (req, res) => {
             // Set cookie with userID
             res.cookie('userID', userID);
             res.redirect('/user-info');
+
         } else if (action === 'deleteCookie') {
             // Clear the cookie
             res.clearCookie('userID');
             return res.redirect('/');
+
         } else {
             res.status(400).send('Invalid action');
         }
+
     } catch (error) {
         console.error('Error during login/register:', error);
         res.status(500).send('Internal Server Error');
@@ -164,6 +169,9 @@ app.get('/user-info', async (req, res) => {
                 </form><br>
                 <form action="/" method="post">
                     <button type="submit" class="btn btn-secondary" name="action" value="deleteCookie">Delete Cookie</button>
+                </form><br>
+                <form action="/cookie-reporting" method="get">
+                    <button type="submit" class="btn btn-info">Cookie Reporting</button>
                 </form>
             </div>
         </body>
@@ -179,6 +187,71 @@ app.post('/logout', async (req, res) => {
     // Redirect to the login page
     res.redirect('/');
 });
+
+// Cookie clearing route
+app.post('/clear-cookie', (req, res) => {
+    // Clear the cookie
+    res.clearCookie('userID');
+
+    // Render a page indicating that the cookie has been cleared
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Cookie Cleared</title>
+            <!-- Include Bootstrap CSS directly from CDN -->
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container mt-5">
+                <h1>Cookie Cleared</h1>
+                <p>The cookie has been cleared successfully.</p>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='/cookie-reporting'">Login</button>
+            </div>
+        </body>
+        </html>
+    `);
+});
+
+app.get('/cookie-reporting', (req, res) => {
+    // Retrieve userID from cookie
+    const userID = req.cookies.userID;
+
+    // Check if userID exists
+    if (!userID) {
+        // If userID doesn't exist, redirect to login page
+        return res.redirect('/');
+    }
+
+    // Display currently set cookie
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Cookie Reporting</title>
+            <!-- Include Bootstrap CSS directly from CDN -->
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container mt-5">
+                <h1>Cookie Reporting</h1>
+                <p>Currently set cookie: ${userID}</p>
+                <form action="/clear-cookie" method="post">
+                    <button type="submit" class="btn btn-danger">Clear Cookie</button>
+                </form><br>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='/user-info'">Back to User Info</button>
+            </div>
+        </body>
+        </html>
+    `);
+});
+
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
