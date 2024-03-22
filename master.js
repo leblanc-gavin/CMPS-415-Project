@@ -26,14 +26,32 @@ app.get('/', async (req, res) => {
     }
     else {
     res.send(`
-        <h1>Welcome</h1>
-        <h2>Login or Register</h2>
-        <form action="/" method="post">
-            <input type="text" name="userID" placeholder="Enter username" required><br>
-            <input type="password" name="password" placeholder="Enter password" required><br>
-            <button type="submit" name="action" value="login">Login</button>
-            <button type="submit" name="action" value="register">Register</button>
-        </form>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Login/Register</title>
+            <!-- Include Bootstrap CSS directly from CDN -->
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container mt-5">
+                <h1>Welcome</h1>
+                <h2>Login or Register</h2>
+                <form action="/" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="userID" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="action" value="login">Login</button>
+                    <button type="submit" class="btn btn-secondary" name="action" value="register">Register</button>
+                </form>
+            </div>
+        </body>
+        </html>
     `);
     }
 });
@@ -48,13 +66,27 @@ app.post('/', async (req, res) => {
 
             if (!user) {
                 return res.send(`
-                    <p>Invalid username or password</p>
-                    <button type="button" onclick="window.location.href='/'">Go Back</button>
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Invalid Username or Password</title>
+                        <!-- Include Bootstrap CSS directly from CDN -->
+                        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+                    </head>
+                    <body>
+                        <div class="container mt-5">
+                            <p>Invalid username or password</p>
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='/'">Go Back</button>
+                        </div>
+                    </body>
+                    </html>
                 `);
             }
 
             // Set cookie with userID
-            res.cookie('userID', userID);
+            res.cookie('userID', userID, { maxAge: 60000 });            
             res.redirect('/user-info');
         } else if (action === 'register') {
             // Check if the user already exists
@@ -62,8 +94,22 @@ app.post('/', async (req, res) => {
 
             if (existingUser) {
                 return res.send(`
-                    <p>Username already exists</p>
-                    <button type="button" onclick="window.location.href='/'">Go Back</button>
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Username Already Exists</title>
+                        <!-- Include Bootstrap CSS directly from CDN -->
+                        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+                    </head>
+                    <body>
+                        <div class="container mt-5">
+                            <p>Username already exists</p>
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='/'">Go Back</button>
+                        </div>
+                    </body>
+                    </html>
                 `);
             }
 
@@ -100,14 +146,28 @@ app.get('/user-info', async (req, res) => {
     
     // Display user info
     res.send(`
-        <h1>Welcome ${userID}</h1>
-        <p>Cookie set with userID: ${userID}</p>
-        <form action="/logout" method="post">
-            <button type="submit">Logout</button>
-        </form>
-        <form action="/" method="post">
-            <button type="submit" name="action" value="deleteCookie">Delete Cookie</button>
-        </form>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>User Info</title>
+            <!-- Include Bootstrap CSS directly from CDN -->
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container mt-5">
+                <h1>Welcome ${userID}</h1>
+                <p>Cookie set with userID: ${userID}</p>
+                <form action="/logout" method="post">
+                    <button type="submit" class="btn btn-primary">Logout</button>
+                </form><br>
+                <form action="/" method="post">
+                    <button type="submit" class="btn btn-secondary" name="action" value="deleteCookie">Delete Cookie</button>
+                </form>
+            </div>
+        </body>
+        </html>
     `);
 });
 
