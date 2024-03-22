@@ -20,6 +20,7 @@ mongoose.connect('mongodb+srv://bradford:bradford@cluster0.cpmkg9v.mongodb.net/?
 // Default route - Serve login/register form
 app.get('/', async (req, res) => {
     const userID = req.cookies.userID;
+
     if (userID) {
         res.redirect('/user-info');
 
@@ -88,6 +89,7 @@ app.post('/', async (req, res) => {
             // Set cookie with userID
             res.cookie('userID', userID, { maxAge: 60000 });            
             res.redirect('/user-info');
+
         } else if (action === 'register') {
             // Check if the user already exists
             const existingUser = await User.findOne({ userID });
@@ -120,13 +122,16 @@ app.post('/', async (req, res) => {
             // Set cookie with userID
             res.cookie('userID', userID);
             res.redirect('/user-info');
+
         } else if (action === 'deleteCookie') {
             // Clear the cookie
             res.clearCookie('userID');
             return res.redirect('/');
+
         } else {
             res.status(400).send('Invalid action');
         }
+
     } catch (error) {
         console.error('Error during login/register:', error);
         res.status(500).send('Internal Server Error');
