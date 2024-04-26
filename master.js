@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const User = require('./user');
+require('dotenv').config();
 
 // Initialize Express app
 const app = express();
@@ -12,9 +13,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Connect to MongoDB
-mongoose.connect('mongodb+srv://bradford:bradford@cluster0.cpmkg9v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Connected to MongoDB'))
+// Connect to MongoDB using environment variable
+console.log('Using MongoDB URI:', process.env.MONGODB_URI);
+
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('Connected to MongoDB at', mongoose.connection.host);
+        console.log('Database Name:', mongoose.connection.name);
+
+        // Log the connected database name
+        const dbName = mongoose.connection.db.databaseName;
+        console.log('Connected to database:', dbName);
+    })
+
+
     .catch(err => console.error('Error connecting to MongoDB:', err));
 
 // Default route - Serve login/register form
