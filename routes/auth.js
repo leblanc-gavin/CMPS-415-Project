@@ -25,6 +25,7 @@ router.post('/login', async (req, res) => {
 
 // Registration Endpoint
 router.post('/register', async (req, res) => {
+    console.log(req.body);
     const { userID, password } = req.body;
 
     try {
@@ -33,6 +34,7 @@ router.post('/register', async (req, res) => {
             return res.status(409).send('Username already exists');
         }
         const newUser = new User({ userID, password });
+        console.log(newUser);
         await newUser.save();
         
         const userToken = Buffer.from(newUser.userID).toString('base64');
@@ -41,7 +43,7 @@ router.post('/register', async (req, res) => {
         res.redirect('/user-info'); // Redirect to user info page after successful registration
     } catch (error) {
         console.error('Error during registration:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send('Internal Server Error: ' + error.message);
     }
 });
 
