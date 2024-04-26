@@ -11,7 +11,11 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(401).send('Invalid username or password');
         }
-        res.cookie('userID', userID, { maxAge: 900000 }); // Set cookie for 15 minutes
+
+        // Encode userID or create a token (simple encoding example here)
+        const userToken = Buffer.from(userID).toString('base64');
+        res.cookie('userToken', userToken, { httpOnly: true, secure: false, maxAge: 900000 });
+
         res.redirect('/user-info'); // Redirect to user info page after successful login
     } catch (error) {
         console.error('Error during login:', error);
@@ -30,7 +34,10 @@ router.post('/register', async (req, res) => {
         }
         const newUser = new User({ userID, password });
         await newUser.save();
-        res.cookie('userID', userID); // Automatically log in the user
+        
+        const userToken = Buffer.from(newUser.userID).toString('base64');
+        res.cookie('userToken', userToken, { httpOnly: true, secure: false, maxAge: 900000 });
+        
         res.redirect('/user-info'); // Redirect to user info page after successful registration
     } catch (error) {
         console.error('Error during registration:', error);
@@ -40,7 +47,7 @@ router.post('/register', async (req, res) => {
 
 // Logout Endpoint
 router.post('/logout', (req, res) => {
-    res.clearCookie('userID');
+    res.clearCookie('userToken');
     res.redirect('/'); // Redirect back to the homepage or login page
 });
 

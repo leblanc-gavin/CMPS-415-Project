@@ -4,14 +4,12 @@ const User = require('../models/user');  // Make sure the path matches your user
 
 // User info route
 router.get('/', async (req, res) => {
-    // Retrieve userID from cookie
-    const userID = req.cookies.userID;
-
-    // Check if userID exists
-    if (!userID) {
-        // If userID doesn't exist, redirect to login page
+    
+    const token = req.cookies.userToken;
+    if (!token) {
         return res.redirect('/');
     }
+    const userID = Buffer.from(token, 'base64').toString('ascii');
     
     // Display user info
     res.send(`
