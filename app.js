@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
+const topicRoutes = require('./routes/topics');
 
 const app = express();
 
@@ -18,6 +19,7 @@ connectDB();
 app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user-info', require('./routes/userInfo'));
+app.use('/topics', topicRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;

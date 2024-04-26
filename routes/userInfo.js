@@ -29,13 +29,15 @@ router.get('/', async (req, res) => {
                 <form action="/auth/logout" method="post">
                     <button type="submit" class="btn btn-primary">Logout</button>
                 </form><br>
-                <!-- <form action="/" method="post">
-                    <button type="submit" class="btn btn-secondary" name="action" value="deleteCookie">Delete Cookie</button>
-                </form><br>
-                <form action="/cookie-reporting" method="get">
-                    <button type="submit" class="btn btn-info">Cookie Reporting</button>
-                </form> -->
+                <form action="/topics/create" method="post">
+                <div class="form-group">
+                    <label for="topicTitle">New Topic Title:</label>
+                    <input type="text" class="form-control" id="topicTitle" name="title" required>
+                </div>
+                <button type="submit" class="btn btn-success">Create Topic</button>
+            </form>
             </div>
+
         </body>
         </html>
     `);
