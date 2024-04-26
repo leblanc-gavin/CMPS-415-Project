@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
             <div class="container mt-5">
                 <h1>Welcome ${userID}</h1>
                 <p>Cookie set with userID: ${userID}</p>
-                <form action="/logout" method="post">
+                <form action="/auth/logout" method="post">
                     <button type="submit" class="btn btn-primary">Logout</button>
                 </form><br>
                 <!-- <form action="/" method="post">
