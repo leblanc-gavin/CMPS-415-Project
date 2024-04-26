@@ -2,7 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const User = require('./user');
+const User = require('../models/user');
 require('dotenv').config();
 
 // Initialize Express app
