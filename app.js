@@ -2,9 +2,9 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 
-require('dotenv').config(); // Ensuring dotenv is configured as early as possible
-
 const app = express();
+
+require('dotenv').config(); // Ensuring dotenv is configured as early as possible
 
 // Middleware
 app.use(express.json());
