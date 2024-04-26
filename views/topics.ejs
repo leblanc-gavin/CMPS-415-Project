@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Topics</title>
+</head>
+<body>
+    <h1>Available Topics</h1>
+    <ul>
+        <% topics.forEach(function(topic) { %>
+            <li>
+                <a href="/topics/<%= topic._id %>"><%= topic.title %></a>
+                - Created by <%= topic.creator.userID %>
+            </li>
+        <% }); %>
+    </ul>
+    <a href="/user-info" class="btn btn-secondary">Back to User Info</a>
+</body>
+</html>

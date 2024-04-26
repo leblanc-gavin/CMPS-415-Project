@@ -4,6 +4,7 @@ const connectDB = require('./config/db');
 const topicRoutes = require('./routes/topics');
 
 const app = express();
+app.set('view engine', 'ejs');
 
 require('dotenv').config(); // Ensuring dotenv is configured as early as possible
 
