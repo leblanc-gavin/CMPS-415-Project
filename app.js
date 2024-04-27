@@ -21,6 +21,7 @@ app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user-info', require('./routes/userInfo'));
 app.use('/topics', topicRoutes);
+app.use('/devtools', require('./routes/devtools'));
 
 // Start the server
 const PORT = process.env.PORT || 3000;
