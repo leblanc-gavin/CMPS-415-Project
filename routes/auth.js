@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
 
 // Registration Endpoint
 router.post('/register', async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     const { userID, password } = req.body;
 
     try {

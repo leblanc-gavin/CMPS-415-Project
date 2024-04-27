@@ -1,8 +1,10 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
+const topicRoutes = require('./routes/topics');
 
 const app = express();
+app.set('view engine', 'ejs');
 
 require('dotenv').config(); // Ensuring dotenv is configured as early as possible
 
@@ -18,6 +20,7 @@ connectDB();
 app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user-info', require('./routes/userInfo'));
+app.use('/topics', topicRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
