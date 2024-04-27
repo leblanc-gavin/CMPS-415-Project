@@ -19,6 +19,10 @@
             </li>
         <% }); %>
     </ul>
+    <form action="/topics/<%= topic._id %>/posts" method="post">
+        <textarea name="content" required placeholder="Write your post here..."></textarea>
+        <button type="submit">Post</button>
+    </form>
     <a href="/topics">Back to Topics</a>
 </body>
 </html>

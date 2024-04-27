@@ -86,9 +86,10 @@ router.post('/:topicId/posts', async (req, res) => {
     const { content } = req.body;
     const topicId = req.params.topicId;
     const userId = Buffer.from(req.cookies.userToken, 'base64').toString('ascii'); 
+    console.log("Extracted userID from token: ", userId); // Debugging line
 
     try {
-        const user = await User.findOne({ userId });
+        const user = await User.findOne({ userID: userId });
         const newPost = new Post({
             content: content,
             author: user._id,
