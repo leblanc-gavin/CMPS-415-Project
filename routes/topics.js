@@ -54,7 +54,9 @@ router.post('/create', async (req, res) => {
             topic: newTopic._id
         });
         await newPost.save();
-
+        
+        await Topic.findByIdAndUpdate(newTopic._id, { $push: { posts: newPost._id } });
+        
         res.redirect(`/topics/${newTopic._id}`); // Redirect to the new topic page
     } catch (error) {
         res.status(500).send("Error creating topic and post: " + error.message);
@@ -64,9 +66,10 @@ router.post('/create', async (req, res) => {
 router.get('/:topicId', async (req, res) => {
     try {
         const topic = await Topic.findById(req.params.topicId)
+            .populate('creator', 'userID') 
             .populate({
                 path: 'posts',
-                populate: { path: 'author', select: 'username' }
+                populate: { path: 'author', select: 'userID' } 
             });
 
         if (!topic) {

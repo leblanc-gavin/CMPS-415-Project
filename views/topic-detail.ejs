@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= topic.title %></title>
+</head>
+<body>
+    <h1><%= topic.title %></h1>
+    <h2>Created by <%= topic.creator.userID %></h2>
+    <ul>
+        <% posts.forEach(function(post) { %>
+            <li>
+                <%= post.content %>
+                <br>
+                Posted by: <%= post.author.userID %>
+                <br>
+                On: <%= post.createdAt.toDateString() %>
+            </li>
+        <% }); %>
+    </ul>
+    <a href="/topics">Back to Topics</a>
+</body>
+</html>
