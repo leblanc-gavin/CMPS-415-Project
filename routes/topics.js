@@ -3,6 +3,8 @@ const router = express.Router();
 const Topic = require('../models/topic'); 
 const User = require('../models/user');
 const Post = require('../models/post');
+const UserSubscription = require('../models/userSubscription');
+
 
 function isAuthenticated(req, res, next) {
     if (!req.cookies.userToken) {
@@ -45,7 +47,14 @@ router.post('/create', async (req, res) => {
             title: req.body.title,
             creator: user._id
         });
-        await newTopic.save();
+        
+         // Update user's subbedTopics array
+        await UserSubscription.findOneAndUpdate(
+            { userId: user._id },
+            { $addToSet: { subbedTopics: newTopic.title } }, // Add the new topic title to subbedTopics array
+            { upsert: true } // Create a new document if it doesn't exist
+        );
+
 
         // Create the initial post
         const newPost = new Post({
