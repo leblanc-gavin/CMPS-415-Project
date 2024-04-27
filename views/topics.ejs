@@ -4,17 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Topics</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
-    <h1>Available Topics</h1>
-    <ul>
-        <% topics.forEach(function(topic) { %>
-            <li>
-                <a href="/topics/<%= topic._id %>"><%= topic.title %></a>
-                - Created by <%= topic.creator.userID %>
-            </li>
-        <% }); %>
-    </ul>
-    <a href="/user-info" class="btn btn-secondary">Back to User Info</a>
+    <%- include('partials/navbar') %>
+
+    <div class="container">
+        <h1 class="mt-4 mb-4">Available Topics</h1>
+        <div class="row">
+            <% topics.forEach(function(topic) { %>
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= topic.title %></h5>
+                            <p class="card-text">Created by <%= topic.creator.userID %></p>
+                            <a href="/topics/<%= topic._id %>" class="btn btn-primary">View Topic</a>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        <a href="/user-info" class="btn btn-secondary mt-3">Back to User Info</a>
+    </div>
 </body>
 </html>
