@@ -52,7 +52,6 @@ router.post('/create', async (req, res) => {
         await Subscriptions.findOneAndUpdate(
             { userId: user._id },
             { $addToSet: { subbedTopics: newTopic.title } }, // Add the new topic title to subbedTopics array
-            { upsert: true } // Create a new document if it doesn't exist
         );
 
 
