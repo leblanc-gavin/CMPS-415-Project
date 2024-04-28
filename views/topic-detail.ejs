@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= topic.title %></title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
+    <%- include('partials/navbar') %>
+
     <h1><%= topic.title %></h1>
     <h2>Created by <%= topic.creator.userID %></h2>
     <ul>
@@ -19,6 +23,10 @@
             </li>
         <% }); %>
     </ul>
+    <form action="/topics/<%= topic._id %>/posts" method="post">
+        <textarea name="content" required placeholder="Write your post here..."></textarea>
+        <button type="submit">Post</button>
+    </form>
     <a href="/topics">Back to Topics</a>
 </body>
 </html>
