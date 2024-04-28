@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const subscriptionsSchema = new mongoose.Schema({
-    userId: { type: String, required: true }, // Change the type to String
+    userId: { type: String, required: true }, 
     subbedTopics: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topic', required: true }],
 });
 

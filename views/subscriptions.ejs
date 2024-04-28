@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscribed Topics</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
+    <%- include('partials/navbar') %>
+
     <h1>Subscribed Topics</h1>
     <ul>
-        <% if (subscriptions && subscriptions.subbedTopics.length > 0) { %>
-            <% subscriptions.subbedTopics.forEach(function(subscriptions) { %>
-                <li><%= subbedTopics %></li>
+        <% if (subscriptions && subscriptions.subbedTopics && subscriptions.subbedTopics.length > 0) { %>
+            <% subscriptions.subbedTopics.forEach(function(subbedTopic) { %>
+                <li><%= subbedTopic %></li>
             <% }); %>
         <% } else { %>
             <li>No subscribed topics found.</li>
         <% } %>
     </ul>
-    <a href="/subscriptions" class="btn btn-secondary">Back to User Info</a>
+    <a href="/user-info" class="btn btn-secondary">Back to User Info</a>
 </body>
 </html>

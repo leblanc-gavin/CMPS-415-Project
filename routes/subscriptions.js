@@ -23,7 +23,7 @@ router.get('/', isAuthenticated, async (req, res) => {
         if (!subscriptions) {
             return res.status(404).send('Subscriptions not found');
         }
-
+        console.log("Subscriptions:", subscriptions);
         res.render('subscriptions', { subscriptions: subscriptions });
     } catch (error) {
         res.status(500).send("Error fetching subscriptions: " + error.message);
