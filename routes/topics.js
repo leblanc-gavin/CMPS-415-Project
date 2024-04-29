@@ -43,9 +43,11 @@ router.post('/create', async (req, res) => {
         // Create the new topic
         const newTopic = new Topic({
             title: req.body.title,
-            creator: user._id
+            creator: user._id,
+            subscribers: [user._id]
         });
         await newTopic.save();
+        console.log(newTopic);
 
         // Create the initial post
         const newPost = new Post({
