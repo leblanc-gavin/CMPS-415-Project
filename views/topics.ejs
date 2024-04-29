@@ -12,28 +12,37 @@
     <main class="container">
       
         <div class="my-3 p-3 bg-body rounded shadow-sm">
-          <h6 class="border-bottom pb-2 mb-0">Recent Subscription Updates</h6>
-          <div class="d-flex text-body-secondary pt-3">
-            <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-            <p class="pb-3 mb-0 small lh-sm border-bottom">
-              <strong class="d-block text-gray-dark">@username</strong>
-              Some representative placeholder content, with some information about this user. Imagine this being some sort of status update, perhaps?
-            </p>
+            <h6 class="border-bottom pb-2 mb-0">Recent Subscription Updates</h6>
+            <% topicsWithRecentPosts.forEach(function(topic) { %>
+              <div class="pt-3">
+                <strong class="text-gray-dark" style="font-size: 16px;"><%= topic.title %></strong>
+                <% topic.recentPosts.forEach(function(post) { %>
+                  <div class="d-flex text-muted pt-2">
+                    <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="20" height="20" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 20x20" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect></svg>
+                    <div class="pb-2 mb-0 small lh-sm border-bottom w-100">
+                      <strong class="text-gray-dark">@<%= post.author.userID %></strong><br>
+                      <span class="d-block"><%= post.content %></span>
+                      <span class="d-block">Posted on: <%= post.createdAt.toDateString() %></span>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% }); %>
+            <small class="d-block text-end mt-3">
+              <a href="#">All updates</a>
+            </small>
           </div>
-          <small class="d-block text-end mt-3">
-            <a href="#">All updates</a>
-          </small>
-        </div>
       
         <div class="my-3 p-3 bg-body rounded shadow-sm">
           <h6 class="border-bottom pb-2 mb-0">Currently Active Topics</h6>
-          <% topics.forEach(function(topic) { %>
+          <% allTopics.forEach(function(topic) { %>
 
           <div class="d-flex text-body-secondary pt-3">
             <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
             <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
               <div class="d-flex justify-content-between">
                 <strong class="text-gray-dark"><%= topic.title %></strong>
+                
                 <a href="/topics/<%= topic._id %>" class="btn btn-primary">View Topic</a>
               </div>
               <span class="d-block">Created by: <%= topic.creator.userID %></span>

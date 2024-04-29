@@ -12,12 +12,40 @@ function isAuthenticated(req, res, next) {
 }
 
 router.get('/', isAuthenticated, async (req, res) => {
+    const userId = Buffer.from(req.cookies.userToken, 'base64').toString('ascii');
     try {
-        const topics = await Topic.find().populate('creator', 'userID'); // Fetch all topics with creator details
-        res.render('topics', { topics: topics });
+        const user = await User.findOne({ userID: userId });
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+        const topics = await Topic.find().populate('creator', 'userID');
+        const subscribedTopics = await Topic.find({ subscribers: user._id })
+            .populate('creator', 'userID');
+
+        const topicsWithRecentPosts = await Promise.all(subscribedTopics.map(async (topic) => {
+            const recentPosts = await Post.find({ topic: topic._id })
+                .sort({ createdAt: -1 })
+                .limit(2)
+                .populate('author', 'userID');  // Assuming you want to display the author's userID
+
+            return {
+                ...topic._doc,
+                recentPosts: recentPosts
+            };
+        }));
+
+        res.render('topics', { allTopics: topics, topicsWithRecentPosts: topicsWithRecentPosts });
+
     } catch (error) {
+        console.error("Error fetching subscribed topics: " + error.message);
         res.status(500).send("Error fetching topics: " + error.message);
     }
+    // try {
+    //     const topics = await Topic.find().populate('creator', 'userID'); // Fetch all topics with creator details
+    //     res.render('topics', { topics: topics });
+    // } catch (error) {
+    //     res.status(500).send("Error fetching topics: " + error.message);
+    // }
 });
 
 
