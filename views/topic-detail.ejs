@@ -10,52 +10,47 @@
 <body>
     <%- include('partials/navbar') %>
 
-    <h1><%= topic.title %></h1>
-    <h2>Created by <%= topic.creator.userID %></h2>
-    <ul>
-        <% posts.forEach(function(post) { %>
-            <li>
-                <%= post.content %>
-                <br>
-                Posted by: <%= post.author.userID %>
-                <br>
-                On: <%= post.createdAt.toDateString() %>
-            </li>
-        <% }); %>
-    </ul>
-    <form action="/topics/<%= topic._id %>/posts" method="post">
-        <textarea name="content" required placeholder="Write your post here..."></textarea>
-        <button type="submit">Post</button>
-    </form>
-    <% if(topic.subscribers.map(sub => sub.toString()).includes(userID)) { %>
-        <form action="/topics/<%= topic._id %>/unsubscribe" method="post">
-            <button type="submit" class="btn btn-warning">Unsubscribe</button>
-        </form>
-    <% } else { %>
-        <form action="/topics/<%= topic._id %>/subscribe" method="post">
-            <button type="submit" class="btn btn-success">Subscribe</button>
-        </form>
-    <% } %>
-    
-    
-    <a href="/topics">Back to Topics</a>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-3"><%= topic.title %></h1>
+                <h2 class="mb-3">Created by <%= topic.creator.userID %></h2>
+            </div>
+            <div>
+                <% if(topic.subscribers.map(sub => sub.toString()).includes(userID)) { %>
+                    <form action="/topics/<%= topic._id %>/unsubscribe" method="post">
+                        <button type="submit" class="btn btn-warning">Unsubscribe</button>
+                    </form>
+                <% } else { %>
+                    <form action="/topics/<%= topic._id %>/subscribe" method="post">
+                        <button type="submit" class="btn btn-success">Subscribe</button>
+                    </form>
+                <% } %>
+            </div>
+        </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const subscribers = JSON.parse(document.getElementById('subscribers').value);
-            const userId = document.getElementById('currentUserId').value;
-            //const form = document.getElementById('subscriptionForm');
-            //const button = document.getElementById('subscriptionButton');
+        <div class="list-group">
+            <% posts.forEach(function(post) { %>
+                <div class="list-group-item">
+                    <p class="mb-1"><%= post.content %></p>
+                    <small>Posted by: <%= post.author.userID %> on <%= post.createdAt.toDateString() %></small>
+                </div>
+            <% }); %>
+        </div>
 
-            if (subscribers.includes(userId)) {
-                button.textContent = 'Unsubscribe';
-                form.action = '/topics/<%= topic._id %>/unsubscribe';
-            } else {
-                button.textContent = 'Subscribe';
-                form.action = '/topics/<%= topic._id %>/subscribe';
-            }
-        });
-    </script>
+        <div class="my-4">
+            <form action="/topics/<%= topic._id %>/posts" method="post">
+                <div class="form-group">
+                    <textarea class="form-control" name="content" required placeholder="Write your post here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Post</button>
+                <a href="/topics" class="btn btn-link">Back to Topics</a>
+            </form>
+        </div>
+        
+    </div>
+
+
 
 </body>
 </html>
@@ -75,3 +70,18 @@
             <button type="submit">Subscribe</button>
         </form>
     <% } %> -->
+
+        <!-- <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const subscribers = JSON.parse(document.getElementById('subscribers').value);
+            const userId = document.getElementById('currentUserId').value;
+
+            if (subscribers.includes(userId)) {
+                button.textContent = 'Unsubscribe';
+                form.action = '/topics/<%= topic._id %>/unsubscribe';
+            } else {
+                button.textContent = 'Subscribe';
+                form.action = '/topics/<%= topic._id %>/subscribe';
+            }
+        });
+    </script> -->

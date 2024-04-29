@@ -30,6 +30,9 @@ router.get('/', async (req, res) => {
             }}
         ]);
 
+
+        //console.log(JSON.stringify(randomPosts, null, 2));
+
         // Fetch subscribed topics
         const subscribedTopics = await Topic.find({
             subscribers: user._id
