@@ -23,10 +23,52 @@
             </li>
         <% }); %>
     </ul>
-    <form action="/topics/<%= topic._id %>/posts" method="post">
+
+    <% if(topic.subscribers.map(sub => sub.toString()).includes(userID)) { %>
+        <form action="/topics/<%= topic._id %>/unsubscribe" method="post">
+            <button type="submit" class="btn btn-warning">Unsubscribe</button>
+        </form>
+    <% } else { %>
+        <form action="/topics/<%= topic._id %>/subscribe" method="post">
+            <button type="submit" class="btn btn-success">Subscribe</button>
+        </form>
+    <% } %>
+    
+    
+    <a href="/topics">Back to Topics</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const subscribers = JSON.parse(document.getElementById('subscribers').value);
+            const userId = document.getElementById('currentUserId').value;
+            //const form = document.getElementById('subscriptionForm');
+            //const button = document.getElementById('subscriptionButton');
+
+            if (subscribers.includes(userId)) {
+                button.textContent = 'Unsubscribe';
+                form.action = '/topics/<%= topic._id %>/unsubscribe';
+            } else {
+                button.textContent = 'Subscribe';
+                form.action = '/topics/<%= topic._id %>/subscribe';
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+    <!-- <form action="/topics/<%= topic._id %>/posts" method="post">
         <textarea name="content" required placeholder="Write your post here..."></textarea>
         <button type="submit">Post</button>
     </form>
-    <a href="/topics">Back to Topics</a>
-</body>
-</html>
+    <% if(topic.subscribers && topic.subscribers.includes(userID)) { %>
+        <form action="/topics/<%= topic._id %>/unsubscribe" method="post">
+            <button type="submit">Unsubscribe</button>
+        </form>
+    <% } else { %>
+        <form action="/topics/<%= topic._id %>/subscribe" method="post">
+            <button type="submit">Subscribe</button>
+        </form>
+    <% } %> -->
