@@ -41,6 +41,21 @@
         </div>
         <hr>
 
+        <div class="container">
+            <h2>Subscribed Topics:</h2>
+            <hr>
+        
+            <div class="row">
+                <% subscribedTopics.forEach(function(topic) { %>
+                    <div class="col-md-4">
+                        <h2><%= topic.title %></h2>
+                        <p>Created by <%= topic.creator.userID %></p>
+                        <p><a class="btn btn-secondary" href="/topics/<%= topic._id %>" role="button">View details &raquo;</a></p>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        <hr>
 
         <div class="accordion" id="accordionExample">
             <div class="card">

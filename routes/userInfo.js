@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');  // Make sure the path matches your user model
 const Post = require('../models/post');
+const Topic = require('../models/topic');
 
 // User info route
 router.get('/', async (req, res) => {
@@ -13,6 +14,11 @@ router.get('/', async (req, res) => {
     const userID = Buffer.from(token, 'base64').toString('ascii');
     
     try {
+        const user = await User.findOne({ userID: userID });
+        if (!user) {
+            console.error("User not found with ID:", userID);
+            return res.status(404).send('User not found.');
+        }
         // Fetch 3 random posts including topic details
         const randomPosts = await Post.aggregate([
             { $sample: { size: 3 } },
@@ -24,12 +30,16 @@ router.get('/', async (req, res) => {
             }}
         ]);
 
-        // Display user info along with random posts
-        res.render('user-info', { userID: userID, posts: randomPosts });
-    } catch (error) {
-        console.error("Failed to fetch random posts:", error);
-        res.render('user-info', { userID: userID, posts: [], error: "Failed to fetch posts." });
+        // Fetch subscribed topics
+        const subscribedTopics = await Topic.find({
+            subscribers: user._id
+        }).populate('creator', 'userID');  // Populate creator details if needed
 
+        // Display user info along with random posts and subscribed topics
+        res.render('user-info', { userID: userID, posts: randomPosts, subscribedTopics: subscribedTopics });
+    } catch (error) {
+        console.error("Failed to fetch data:", error);
+        res.render('user-info', { userID: userID, posts: [], subscribedTopics: [], error: "Failed to fetch data." });
     }
 
 });
