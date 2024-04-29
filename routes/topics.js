@@ -26,7 +26,7 @@ router.get('/', isAuthenticated, async (req, res) => {
             const recentPosts = await Post.find({ topic: topic._id })
                 .sort({ createdAt: -1 })
                 .limit(2)
-                .populate('author', 'userID');  // Assuming you want to display the author's userID
+                .populate('author', 'userID');  
 
             return {
                 ...topic._doc,

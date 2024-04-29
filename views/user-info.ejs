@@ -3,9 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Info</title>
+    <title>Dashboard</title>
     <!-- Include Bootstrap CSS directly from CDN -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .content-area {
+            min-height: 120px; /* Adjust this value based on your typical content size */
+        }
+        .carousel-item {
+            min-height: 250px; /* Adjust based on content */
+        }
+        .carousel-item .col-md-4 {
+            float: left;
+            width: 33.333333%; /* Each topic takes up 1/3 of the slide */
+        }
+        .carousel-control-prev, .carousel-control-next {
+            width: 4%; /* Narrow width to prevent covering content */
+            z-index: 2; /* Stay above other content */
+        }
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            opacity: 0.8; /* Slightly see-through */
+        }
+        /* .carousel-inner {
+            margin-right: 4%;
+            margin-left: 4%; 
+        } */
+        .carousel-control-next {
+            right: -5%; /* Adjust this value to move the next button more to the right */
+        }
+        .carousel-control-prev {
+            left: -5%; /* Adjust this value to move the prev button more to the left */
+        }
+    </style>
 </head>
 <body>
     <%- include('partials/navbar') %>
@@ -26,15 +55,17 @@
 
             <div class="row">
                 <% posts.forEach(function(post) { %>
-                    <div class="col-md-4">
-                        <% if (post.topicDetails && post.topicDetails.length > 0) { %>
-                            <h2><%= post.topicDetails[0].title %></h2>
-                            <p><%= post.content.substring(0, 150) %>...</p>
-                            <p><a class="btn btn-secondary" href="/topics/<%= post.topicDetails[0]._id %>" role="button">View details &raquo;</a></p>
-                        <% } else { %>
-                            <h2>Topic Details Not Available</h2>
-                            <p><%= post.content.substring(0, 150) %>...</p>
-                        <% } %>
+                    <div class="col-md-4 d-flex flex-column">
+                        <div class="mb-auto content-area">
+                            <% if (post.topicDetails && post.topicDetails.length > 0) { %>
+                                <h3 class="h5"><%= post.topicDetails[0].title %></h3>
+                                <p><%= post.content.substring(0, 150) %>...</p>
+                            <% } else { %>
+                                <h3 class="h5">Topic Details Not Available</h3>
+                                <p><%= post.content.substring(0, 150) %>...</p>
+                            <% } %>
+                        </div>
+                        <a class="btn btn-secondary mt-auto" href="/topics/<%= post.topicDetails[0]._id %>" role="button">View details &raquo;</a>
                     </div>
                 <% }) %>
             </div>
@@ -44,18 +75,34 @@
         <div class="container">
             <h2>Subscribed Topics:</h2>
             <hr>
-        
-            <div class="row">
-                <% subscribedTopics.forEach(function(topic) { %>
-                    <div class="col-md-4">
-                        <h2><%= topic.title %></h2>
-                        <p>Created by <%= topic.creator.userID %></p>
-                        <p><a class="btn btn-secondary" href="/topics/<%= topic._id %>" role="button">View details &raquo;</a></p>
-                    </div>
-                <% }); %>
+            <div id="subscribedTopicsCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <% for(let i = 0; i < subscribedTopics.length; i+=3) { %>
+                        <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                            <div class="row">
+                                <% for(let j = i; j < i + 3 && j < subscribedTopics.length; j++) { %>
+                                    <div class="col-md-4 d-flex flex-column">
+                                        <div class="mb-auto content-area">
+                                            <h3 class="h5"><%= subscribedTopics[j].title %></h3>
+                                            <p>Created by <%= subscribedTopics[j].creator.userID %></p>
+                                        </div>
+                                        <a class="btn btn-secondary mt-auto w-100" href="/topics/<%= subscribedTopics[j]._id %>" role="button">View details &raquo;</a>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+                <a class="carousel-control-prev" href="#subscribedTopicsCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#subscribedTopicsCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
             </div>
         </div>
-        <hr>
 
         <div class="accordion" id="accordionExample">
             <div class="card">
@@ -96,11 +143,4 @@
 
 
 </html>
-
-
-
-
-
-
-
 
