@@ -72,7 +72,14 @@ router.post('/create', async (req, res) => {
 });
 
 router.get('/:topicId', async (req, res) => {
+    
+    const userId = Buffer.from(req.cookies.userToken, 'base64').toString('ascii');  
+
     try {
+        const user = await User.findOne({ userID: userId });
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
         const topic = await Topic.findById(req.params.topicId)
             .populate('creator', 'userID') 
             .populate({
@@ -84,7 +91,10 @@ router.get('/:topicId', async (req, res) => {
             return res.status(404).send('Topic not found');
         }
 
-        res.render('topic-detail', { topic: topic, posts: topic.posts });
+        console.log("User ID:", user._id.toString());
+        console.log("Subscribers:", topic.subscribers.map(sub => sub.toString()));
+
+        res.render('topic-detail', { topic: topic, posts: topic.posts, userID: user._id.toString() });
     } catch (error) {
         res.status(500).send("Error accessing topic: " + error.message);
     }
@@ -110,6 +120,56 @@ router.post('/:topicId/posts', async (req, res) => {
         res.redirect(`/topics/${topicId}`);
     } catch (error) {
         res.status(500).send("Error posting message: " + error.message);
+    }
+});
+
+router.post('/:topicId/subscribe', isAuthenticated, async (req, res) => {
+    const userId = Buffer.from(req.cookies.userToken, 'base64').toString('ascii');
+
+    try {
+        const user = await User.findOne({ userID: userId });
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        const topic = await Topic.findById(req.params.topicId);
+        if (!topic) {
+            return res.status(404).send("Topic not found.");
+        }
+
+        // Add user to subscribers if not already subscribed
+        if (!topic.subscribers.includes(user._id)) {
+            topic.subscribers.push(user._id);
+            await topic.save();
+        }
+
+        res.redirect(`/topics/${req.params.topicId}`);
+    } catch (error) {
+        res.status(500).send("Error subscribing to topic: " + error.message);
+    }
+});
+
+router.post('/:topicId/unsubscribe', isAuthenticated, async (req, res) => {
+    const userId = Buffer.from(req.cookies.userToken, 'base64').toString('ascii');
+
+    try {
+        const user = await User.findOne({ userID: userId });
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        const topic = await Topic.findById(req.params.topicId);
+        if (!topic) {
+            return res.status(404).send("Topic not found.");
+        }
+
+        // Remove user from subscribers
+        topic.subscribers = topic.subscribers.filter(subscriberId => !subscriberId.equals(user._id));
+        await topic.save();
+
+        res.redirect(`/topics/${req.params.topicId}`);
+    } catch (error) {
+        res.status(500).send("Error unsubscribing from topic: " + error.message);
     }
 });
 
