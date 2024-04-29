@@ -62,7 +62,8 @@
                     <button onclick="cancelEdit('<%= post._id %>')" class="btn btn-secondary">Cancel</button>
                 </div>
             </div>
-        <% }); %>
+            <% }); %>
+            
         
 
         <div class="my-4 d-flex justify-content-between">
@@ -86,15 +87,21 @@
 function editPost(postId) {
     const contentDiv = document.getElementById(`post-content-${postId}`);
     const formDiv = document.getElementById(`edit-form-${postId}`);
+    const buttonDiv = contentDiv.nextElementSibling; // Assuming the button div is next to the content div
+
     contentDiv.style.display = 'none';
     formDiv.style.display = 'block';
+    buttonDiv.style.display = 'none'; // Hide the edit and delete buttons
 }
 
 function cancelEdit(postId) {
     const contentDiv = document.getElementById(`post-content-${postId}`);
     const formDiv = document.getElementById(`edit-form-${postId}`);
+    const buttonDiv = contentDiv.nextElementSibling; // Reuse the reference to the button div
+
     formDiv.style.display = 'none';
     contentDiv.style.display = 'block';
+    buttonDiv.style.display = 'flex'; // Show the edit and delete buttons
 }
 
 function updatePost(topicId, postId) {
@@ -109,11 +116,12 @@ function updatePost(topicId, postId) {
     .then(response => response.json())
     .then(data => {
         document.getElementById(`post-content-${postId}`).innerHTML = `<p class="mb-1">${newText}</p>`;
-        cancelEdit(postId);
+        cancelEdit(postId); // This will also show the buttons again
     })
     .catch(error => console.error('Error updating post:', error));
 }
 </script>
+
 
 
 </body>
