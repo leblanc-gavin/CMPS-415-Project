@@ -40,12 +40,7 @@ router.get('/', isAuthenticated, async (req, res) => {
         console.error("Error fetching subscribed topics: " + error.message);
         res.status(500).send("Error fetching topics: " + error.message);
     }
-    // try {
-    //     const topics = await Topic.find().populate('creator', 'userID'); // Fetch all topics with creator details
-    //     res.render('topics', { topics: topics });
-    // } catch (error) {
-    //     res.status(500).send("Error fetching topics: " + error.message);
-    // }
+
 });
 
 
@@ -192,6 +187,84 @@ router.post('/:topicId/unsubscribe', isAuthenticated, async (req, res) => {
         res.redirect(`/topics/${req.params.topicId}`);
     } catch (error) {
         res.status(500).send("Error unsubscribing from topic: " + error.message);
+    }
+});
+
+router.post('/:topicId/posts/:postId/delete', isAuthenticated, async (req, res) => {
+    const userId = Buffer.from(req.cookies.userToken, 'base64').toString('ascii');
+    const { topicId, postId } = req.params;
+
+    try {
+        const post = await Post.findById(postId);
+        const user = await User.findOne({ userID: userId });
+
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        // Check if the logged-in user is the author of the post
+        if (post.author.toString() !== user._id.toString()) {
+            return res.status(403).send("You can only delete your own posts.");
+        }
+
+        await Post.findByIdAndDelete(postId);
+
+        res.redirect(`/topics/${topicId}`);
+    } catch (error) {
+        res.status(500).send("Error deleting post: " + error.message);
+    }
+});
+
+router.post('/:topicId/posts/:postId/update', isAuthenticated, async (req, res) => {
+    const { content } = req.body;
+    const { topicId, postId } = req.params;
+
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+        const user = await User.findOne({ userID: Buffer.from(req.cookies.userToken, 'base64').toString('ascii') });
+        if (!post.author.equals(user._id)) {
+            return res.status(403).send("You can only update your own posts.");
+        }
+
+        post.content = content;
+        await post.save();
+        res.json({ message: "Post updated successfully", content });
+    } catch (error) {
+        res.status(500).json({ error: "Error updating post" });
+    }
+});
+
+router.post('/:topicId/delete', isAuthenticated, async (req, res) => {
+    const { topicId } = req.params;
+    const userId = Buffer.from(req.cookies.userToken, 'base64').toString('ascii');
+
+    try {
+        const topic = await Topic.findById(topicId);
+        if (!topic) {
+            return res.status(404).send('Topic not found');
+        }
+        
+        const user = await User.findOne({ userID: userId });
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        // Check if the logged-in user is the creator of the topic
+        if (!topic.creator.equals(user._id)) {
+            return res.status(403).send("You can only delete topics that you have created.");
+        }
+
+        // Delete the topic
+        await Topic.findByIdAndDelete(topicId);
+        // Optionally, delete all posts associated with this topic or handle them differently
+        await Post.deleteMany({ topic: topicId });
+
+        res.redirect('/topics'); // Redirect to the topics listing or dashboard
+    } catch (error) {
+        res.status(500).send("Error deleting topic: " + error.message);
     }
 });
 

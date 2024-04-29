@@ -57,11 +57,10 @@
         <div class="container">
             <h2>Trending Topics: </h2>
             <hr>
-
             <div class="row">
                 <% posts.forEach(function(post) { %>
                     <div class="col-md-4 d-flex flex-column">
-                        <div class="mb-auto content-area">
+                        <div class="mb-auto content-area" style="flex: 1;">
                             <% if (post.topicDetails && post.topicDetails.length > 0) { %>
                                 <h3 class="h5"><%= post.topicDetails[0].title %></h3>
                                 <p><%= post.content.substring(0, 150) %>...</p>
@@ -70,11 +69,15 @@
                                 <p><%= post.content.substring(0, 150) %>...</p>
                             <% } %>
                         </div>
-                        <a class="btn btn-secondary mt-auto" href="/topics/<%= post.topicDetails[0]._id %>" role="button">View details &raquo;</a>
+                        <!-- Ensure the button stretches fully by adding w-100 -->
+                        <% if (post.topicDetails && post.topicDetails.length > 0) { %>
+                            <a class="btn btn-secondary mt-auto w-100" href="/topics/<%= post.topicDetails[0]._id %>" role="button">View details &raquo;</a>
+                        <% } %>
                     </div>
                 <% }) %>
             </div>
         </div>
+        
         <hr>
 
         <div class="container">
