@@ -39,8 +39,33 @@
                 <% }) %>
             </div>
         </div>
+        
         <hr>
-
+        <% subscriptions.forEach(function(subscription) { %>
+            <div class="container">
+                <h2>Recent Posts for <%= subscription.topic %>:</h2>
+                <hr>
+                <div class="row">
+                    <% let count = 0; %>
+                    <% posts.forEach(function(post) { %>
+                        <% if (post.topic === subscription.topic && count < 2) { %>
+                            <div class="col-md-4">
+                                <% if (post.topicDetails && post.topicDetails.length > 0) { %>
+                                    <h3><%= post.topicDetails[0].title %></h3>
+                                    <p><%= post.content.substring(0, 150) %>...</p>
+                                    <p><a class="btn btn-secondary" href="/topics/<%= post.topicDetails[0]._id %>" role="button">View details &raquo;</a></p>
+                                <% } else { %>
+                                    <h3>Topic Details Not Available</h3>
+                                    <p><%= post.content.substring(0, 150) %>...</p>
+                                <% } %>
+                            </div>
+                            <% count++; %>
+                        <% } %>
+                    <% }) %>
+                </div>
+            </div>
+            <hr>
+        <% }) %>
 
         <div class="accordion" id="accordionExample">
             <div class="card">

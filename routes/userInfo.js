@@ -34,4 +34,30 @@ router.get('/', async (req, res) => {
 
 });
 
+try {
+    // Fetch user's subscriptions
+    const subscriptions = await Subscription.find({ userID: userID });
+
+    // Extract topic IDs from subscriptions
+    const topicIDs = subscriptions.map(subscription => subscription.topic);
+
+    // Fetch the two most recent posts for each subscribed topic
+    const recentPosts = await Promise.all(topicIDs.map(async (topicID) => {
+        return Post.aggregate([
+            { $match: { topic: topicID } },
+            { $sort: { createdAt: -1 } }, // Sort by creation date, newest first
+            { $limit: 2 } // Limit to 2 most recent posts
+        ]);
+    }));
+
+    // Flatten the array of arrays into a single array of posts
+    const posts = recentPosts.flat();
+
+    // Display user info along with recent posts
+    res.render('user-info', { userID: userID, posts: posts });
+} catch (error) {
+    console.error("Failed to fetch recent posts:", error);
+    res.render('user-info', { userID: userID, posts: [], error: "Failed to fetch posts." });
+}
+
 module.exports = router;
