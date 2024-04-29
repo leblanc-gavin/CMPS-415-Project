@@ -34,7 +34,23 @@ router.get('/', isAuthenticated, async (req, res) => {
             };
         }));
 
-        res.render('topics', { allTopics: topics, topicsWithRecentPosts: topicsWithRecentPosts });
+        const recentlyPosted = await Promise.all(topics.map(async (topic) => {
+            const mostRecentPost = await Post.findOne({ topic: topic._id })
+                .sort({ createdAt: -1 })
+                .populate('author', 'userID');
+            return {
+                topicId: topic._id,
+                mostRecentPost: mostRecentPost ? {
+                    postId: mostRecentPost._id,
+                    content: mostRecentPost.content,
+                    author: mostRecentPost.author.userID,
+                    createdAt: mostRecentPost.createdAt
+                } : null
+            };
+        }));
+
+
+        res.render('topics', { allTopics: topics, topicsWithRecentPosts: topicsWithRecentPosts, recentlyPosted: recentlyPosted });
 
     } catch (error) {
         console.error("Error fetching subscribed topics: " + error.message);

@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Topics</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
+    <style>
+        .topic-info, .topic-details span {
+            margin: 0;  /* Remove all margins */
+            padding: 0; /* Remove all padding */
+            line-height: 1.2; /* Set a tighter line height */
+            font-size: 14px; /* Optionally adjust font size if it's contributing to the issue */
+        }
+    </style>
+    
+    
 </head>
 <body>
     <%- include('partials/navbar') %>
@@ -33,22 +42,29 @@
             <% }); %>
           </div>
       
-        <div class="my-3 p-3 bg-body rounded shadow-sm">
-          <h6 class="border-bottom pb-2 mb-0">Currently Active Topics</h6>
-          <% allTopics.forEach(function(topic) { %>
-
-          <div class="d-flex text-body-secondary pt-3">
-            <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-            <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-              <div class="d-flex justify-content-between">
-                <strong class="text-gray-dark"><%= topic.title %></strong>
-                
-                <a href="/topics/<%= topic._id %>" class="btn btn-primary">View Topic</a>
-              </div>
-              <span class="d-block">Created by: <%= topic.creator.userID %></span>
-            </div>
-          </div>
-          <% }); %>
+          <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h6 class="border-bottom pb-2 mb-0">Currently Active Topics</h6>
+            <% allTopics.forEach(function(topic) { %>
+                <div class="d-flex text-body-secondary pt-3">
+                    <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect></svg>
+                    <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+                        <div class="d-flex justify-content-between">
+                            <strong class="text-gray-dark"><%= topic.title %></strong>
+                            <a href="/topics/<%= topic._id %>" class="btn btn-primary">View Topic</a>
+                        </div>
+                        <span class="d-block topic-info">Created by: <%= topic.creator.userID %></span>
+                        <% const recent = recentlyPosted.find(post => post.topicId.toString() === topic._id.toString()) %>
+                        <% if(recent && recent.mostRecentPost) { %>
+                            <div class="topic-details">
+                                <span><strong>Latest post by <%= recent.mostRecentPost.author %> on <%= new Date(recent.mostRecentPost.createdAt).toLocaleDateString() %>:
+                                </strong><%= recent.mostRecentPost.content %></span>
+                            </div>
+                        <% } else { %>
+                            <span class="d-block mt-2">No posts yet.</span>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
         </div>
       </main>
 </body>

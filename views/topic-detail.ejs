@@ -46,6 +46,9 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div id="post-content-<%= post._id %>">
                         <p class="mb-1"><%= post.content %></p>
+                        <small>Posted by <%= post.author.userID %> </small> on
+                        <small> <%= new Date(post.createdAt).toLocaleDateString() %></small>
+
                     </div>
                     <% if(post.author._id.toString() === userID) { %>
                         <div>
