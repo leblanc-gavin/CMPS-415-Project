@@ -23,7 +23,10 @@
             </li>
         <% }); %>
     </ul>
-
+    <form action="/topics/<%= topic._id %>/posts" method="post">
+        <textarea name="content" required placeholder="Write your post here..."></textarea>
+        <button type="submit">Post</button>
+    </form>
     <% if(topic.subscribers.map(sub => sub.toString()).includes(userID)) { %>
         <form action="/topics/<%= topic._id %>/unsubscribe" method="post">
             <button type="submit" class="btn btn-warning">Unsubscribe</button>
